@@ -65,4 +65,5 @@ steps:
         --file "$(Build.ArtifactStagingDirectory)/trivy-report.html" \
         --name trivy-report.html \
         --auth-mode key
+        --overwrite true
   displayName: "Upload Trivy Report to Blob Storage"
