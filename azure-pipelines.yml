@@ -51,4 +51,18 @@ steps:
       --format template --template "@/template/html.tpl" \
       -o /output/trivy-report.html arasu35/gatus-azure:latest
   displayName: "Run Trivy Scan"
-
+  
+# Upload Trivy Report to Azure Blob Storage
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: "CICD-Demo-Service-Connection"
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      az storage blob upload \
+        --account-name cicd \
+        --container-name trivy-container \
+        --file "$(Build.ArtifactStagingDirectory)/trivy-report.html" \
+        --name trivy-report.html \
+        --auth-mode key
+  displayName: "Upload Trivy Report to Blob Storage"
