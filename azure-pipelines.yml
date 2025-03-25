@@ -52,18 +52,36 @@ steps:
       -o /output/trivy-report.html arasu35/gatus-azure:latest
   displayName: "Run Trivy Scan"
   
-# Upload Trivy Report to Azure Blob Storage
+# Run Trivy Scan and Generate HTML Report
+- script: |
+    set -e
+    echo "Downloading Trivy HTML template..."
+    wget -O html.tpl https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl
+
+    echo "Running Trivy scan..."
+    docker pull aquasec/trivy
+    docker run --rm \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -v $(Build.ArtifactStagingDirectory):/output \
+      -v $(pwd):/template \
+      aquasec/trivy image \
+      --format template --template "@/template/html.tpl" \
+      -o /output/trivy-report.html arasu35/gatus-azure:latest
+  displayName: "Run Trivy Scan"
+
+# Copy Report to VM via Azure VM Extension
 - task: AzureCLI@2
   inputs:
     azureSubscription: "CICD-Demo-Service-Connection"
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
-      az storage blob upload \
-        --account-name cicd \
-        --container-name trivy-container \
-        --file "$(Build.ArtifactStagingDirectory)/trivy-report.html" \
-        --name trivy-report.html \
-        --auth-mode key \
-        --overwrite 
-  displayName: "Upload Trivy Report to Blob Storage"
+      az vm run-command invoke \
+        --resource-group myResourceGroup \
+        --name CICD-demo-vm \
+        --command-id RunShellScript \
+        --scripts "echo 'Copying Trivy report to VM...'" \
+        "mkdir -p /home/azureuser/nginx/html" \
+        "echo '$(Build.ArtifactStagingDirectory)/trivy-report.html' > /home/azureuser/nginx/html/trivy-report.html"
+  displayName: "Copy Trivy Report to VM"
+
