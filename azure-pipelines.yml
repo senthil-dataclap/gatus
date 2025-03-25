@@ -61,7 +61,7 @@ steps:
     scriptLocation: 'inlineScript'
     inlineScript: |
       az vm run-command invoke \
-        --resource-group myResourceGroup \
+        --resource-group CICD-demo-vm_group \
         --name CICD-demo-vm \
         --command-id RunShellScript \
         --scripts "echo 'Copying Trivy report to VM...'" \
