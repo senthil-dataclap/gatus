@@ -66,6 +66,6 @@ steps:
         --command-id RunShellScript \
         --scripts "echo 'Copying Trivy report to VM...'" \
         "mkdir -p /home/azureuser/nginx/html" \
-        "echo '$(Build.ArtifactStagingDirectory)/trivy-report.html' > /home/azureuser/nginx/html/trivy-report.html"
+        "cp '$(Build.ArtifactStagingDirectory)/trivy-report.html' > /home/azureuser/nginx/html/trivy-report.html"
   displayName: "Copy Trivy Report to VM"
 
