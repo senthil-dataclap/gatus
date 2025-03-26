@@ -20,7 +20,7 @@ steps:
 # Build Docker Image in Pipeline
 - script: |
     echo "Building the Docker image..."
-    docker build -t gatus-local -f ./Dockerfile .
+    docker build -t gatus-local:latest -f ./Dockerfile .
   displayName: "Build Docker Image in Pipeline"
 
 # Save the Docker Image as a tar file
@@ -44,4 +44,4 @@ steps:
         --command-id RunShellScript \
         --scripts "mkdir -p /home/azureuser/doc-images" \
         "echo 'Uploading Docker image...'" \
-        "scp -o StrictHostKeyChecking=no gatus-image.tar azureuser@YOUR_VM_IP:/home/azureuser/doc-images/gatus-image.tar"
+        "scp -o StrictHostKeyChecking=no gatus-image.tar azureuser@4.240.5.161:/home/azureuser/doc-images/gatus-image.tar"
