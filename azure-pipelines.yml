@@ -49,7 +49,7 @@ steps:
         --scripts '
           echo "$(DOCKER_PASSWORD)" | docker login -u arasu35 --password-stdin;
           docker pull arasu35/gatus-azure:latest;
-          sleep 15  
+          sleep 10  
         '
 
 #  Run Trivy Scan on Azure VM
