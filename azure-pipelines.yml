@@ -20,10 +20,9 @@ steps:
     docker info  # Verify login success
   displayName: "Login to Docker Hub"
 
-
-#  Pull Image on Azure VM and Run Trivy Scan
+#  Pull Docker Image on Azure VM
 - task: AzureCLI@2
-  displayName: "Pull Docker Image & Run Trivy Scan"
+  displayName: "Pull Docker Image"
   inputs:
     azureSubscription: "CICD-Demo-Service-Connection"
     scriptType: bash
@@ -36,9 +35,21 @@ steps:
         --scripts '
           echo "$(DOCKER_PASSWORD)" | docker login -u arasu35 --password-stdin;
           docker pull arasu35/gatus-azure:latest;
+        '
 
-          # Ensure the Nginx HTML directory exists
-          mkdir -p /home/azureuser/nginx/html;
+#  Run Trivy Scan on Azure VM
+- task: AzureCLI@2
+  displayName: "Run Trivy Scan & Generate Report"
+  inputs:
+    azureSubscription: "CICD-Demo-Service-Connection"
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az vm run-command invoke \
+        --resource-group CICD-demo-vm_group \
+        --name CICD-demo-vm \
+        --command-id RunShellScript \
+        --scripts '
 
           # Run Trivy scan and store the HTML report in the Nginx HTML directory
           docker run --rm -v /home/azureuser/nginx/html:/output aquasec/trivy image --format template --template "@contrib/html.tpl" -o /output/trivy-report.html arasu35/gatus-azure:latest
