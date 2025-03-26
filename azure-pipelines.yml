@@ -42,6 +42,6 @@ steps:
         --resource-group CICD-demo-vm_group \
         --name CICD-demo-vm \
         --command-id RunShellScript \
-        --scripts "mkdir -p /home/azureuser/doc-images" \
+        --scripts  
         "echo 'Uploading Docker image...'" \
         "scp -o StrictHostKeyChecking=no gatus-image.tar azureuser@4.240.5.161:/home/azureuser/doc-images/gatus-image.tar"
