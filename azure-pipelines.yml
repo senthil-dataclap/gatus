@@ -46,8 +46,8 @@ steps:
         --resource-group CICD-demo-vm_group \
         --name CICD-demo-vm \
         --command-id RunShellScript \
-        --scripts "
-          echo $(DOCKER_PASSWORD) | docker login -u arasu35 --password-stdin;
+        --scripts '
+          echo "$(DOCKER_PASSWORD)" | docker login -u arasu35 --password-stdin;
           docker pull arasu35/gatus-azure:latest;
 
           # Ensure the Nginx HTML directory exists
@@ -55,10 +55,9 @@ steps:
 
           # Run Trivy scan and store the HTML report in the Nginx HTML directory
           docker run --rm -v /home/azureuser/nginx/html:/output aquasec/trivy image \
-            --format template --template 'https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl' \
+            --format template --template "https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl" \
             -o /output/trivy-report.html arasu35/gatus-azure:latest;
 
           # Restart Nginx to reflect the new report
           docker restart nginx-reverse-proxy;
-
-    
+        '
