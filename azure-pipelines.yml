@@ -20,19 +20,6 @@ steps:
     docker info  # Verify login success
   displayName: "Login to Docker Hub"
 
-#  Build Docker Image
-- script: |
-    set -e
-    echo "Building the Docker image..."
-    docker build -t arasu35/gatus-azure:latest -f ./Dockerfile .
-    docker images
-  displayName: "Build Docker Image"
-
-#  Push Image to Docker Hub
-- script: |
-    echo "Tagging and pushing to Docker Hub..."
-    docker push arasu35/gatus-azure:latest
-  displayName: "Push Docker Image to Docker Hub"
 
 #  Pull Docker Image on Azure VM
 - task: AzureCLI@2
@@ -49,6 +36,7 @@ steps:
         --scripts '
           echo "$(DOCKER_PASSWORD)" | docker login -u arasu35 --password-stdin;
           docker pull arasu35/gatus-azure:latest;
+          sleep 60  
         '
 
 #  Run Trivy Scan on Azure VM
