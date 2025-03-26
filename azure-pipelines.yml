@@ -41,9 +41,7 @@ steps:
           mkdir -p /home/azureuser/nginx/html;
 
           # Run Trivy scan and store the HTML report in the Nginx HTML directory
-          docker run --rm -v /home/azureuser/nginx/html:/output aquasec/trivy image \
-            --format template --template "https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/html.tpl" \
-            -o /output/trivy-report.html arasu35/gatus-azure:latest;
+          docker run --rm -v /home/azureuser/nginx/html:/output aquasec/trivy image --format template --template "@contrib/html.tpl" -o /output/trivy-report.html arasu35/gatus-azure:latest
 
           # Restart Nginx to reflect the new report
           docker restart nginx-reverse-proxy;
