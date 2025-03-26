@@ -28,6 +28,7 @@ steps:
     echo "Saving the image as a tar file..."
     docker save -o gatus-image.tar gatus-local
   displayName: "Save Docker Image as TAR file"
+  
 # copy image to vm
 - script: |
     echo "Copying Docker image to Azure VM..."
