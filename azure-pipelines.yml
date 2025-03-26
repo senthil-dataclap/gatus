@@ -28,20 +28,8 @@ steps:
     echo "Saving the image as a tar file..."
     docker save -o gatus-image.tar gatus-local
   displayName: "Save Docker Image as TAR file"
-
-# Copy Image to Azure VM
-- task: AzureCLI@2
+# copy image to vm
+- script: |
+    echo "Copying Docker image to Azure VM..."
+    scp -o StrictHostKeyChecking=no gatus-image.tar azureuser@4.240.5.161:/home/azureuser/doc-images/gatus-image.tar
   displayName: "Copy Docker Image to Azure VM"
-  inputs:
-    azureSubscription: "CICD-Demo-Service-Connection"
-    scriptType: "bash"
-    scriptLocation: "inlineScript"
-    inlineScript: |
-      echo "Copying Docker image to Azure VM..."
-      az vm run-command invoke \
-        --resource-group CICD-demo-vm_group \
-        --name CICD-demo-vm \
-        --command-id RunShellScript \
-        --scripts  
-        "echo 'Uploading Docker image...'" \
-        "scp -o StrictHostKeyChecking=no gatus-image.tar azureuser@4.240.5.161:/home/azureuser/doc-images/gatus-image.tar"
