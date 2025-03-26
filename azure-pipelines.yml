@@ -8,29 +8,43 @@ variables:
 - group: CICD-Demo-var-group  # Link the variable group
 
 steps:
-# Checkout Code from GitHub
+#  Checkout Code from GitHub
 - checkout: self
   displayName: "Checkout GitHub repository"
 
-# Login to Docker (Optional if you don't need to push)
+#  Login to Docker Hub
 - script: |
+    set -e  
+    echo "Logging in to Docker Hub..."
     echo $(DOCKER_PASSWORD) | docker login -u arasu35 --password-stdin
+    docker info  # Verify login success
   displayName: "Login to Docker Hub"
 
-# Build Docker Image in Pipeline
-- script: |
-    echo "Building the Docker image..."
-    docker build -t gatus-local:latest -f ./Dockerfile .
-  displayName: "Build Docker Image in Pipeline"
 
-# Save the Docker Image as a tar file
+#  Build Docker Image
 - script: |
-    echo "Saving the image as a tar file..."
-    docker save -o gatus-image.tar gatus-local
-  displayName: "Save Docker Image as TAR file"
-  
-# copy image to vm
+    set -e
+    echo "Building the Docker image..."
+    docker build -t arasu35/gatus-azure:latest -f ./Dockerfile .
+    docker images
+  displayName: "Build Docker Image"
+
+#  Push Image to Docker Hub
 - script: |
-    echo "Copying Docker image to Azure VM..."
-    scp -o StrictHostKeyChecking=no gatus-image.tar azureuser@4.240.5.161:/home/azureuser/doc-images/gatus-image.tar
-  displayName: "Copy Docker Image to Azure VM"
+    echo "Tagging and pushing to Docker Hub..."
+    docker push arasu35/gatus-azure:latest
+  displayName: "Push Docker Image to Docker Hub"
+
+  #  Pull the image in Azure VM
+- task: AzureCLI@2
+  displayName: "Pull Docker Image on VM"
+  inputs:
+    azureSubscription: "CICD-Demo-Service-Connection"
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az vm run-command invoke \
+        --resource-group CICD-demo-vm_group \
+        --name CICD-demo-vm \
+        --command-id RunShellScript \
+        --scripts "docker login -u arasu35 -p $(DOCKER_PASSWORD) && docker pull arasu35/gatus-azure:latest"
