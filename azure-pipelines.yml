@@ -8,7 +8,7 @@ variables:
   - group: CICD-Demo-var-group  # Link the variable group
 
 steps:
-# ✅ Git Pull the latest code inside the Azure VM
+#  Git Pull the latest code inside the Azure VM
 - task: AzureCLI@2
   displayName: "Git Pull Latest Code on Azure VM"
   inputs:
@@ -26,7 +26,7 @@ steps:
           git pull origin Azure-main;
         '
 
-# ✅ Build Docker Image inside the Azure VM
+#  Build Docker Image inside the Azure VM
 - task: AzureCLI@2
   displayName: "Build Docker Image inside Azure VM"
   inputs:
@@ -43,7 +43,7 @@ steps:
           docker build -t gatus-azure:latest -f ./Dockerfile .;
         '
 
-# ✅ Run Trivy Scan and Generate Report inside Azure VM
+#  Run Trivy Scan and Generate Report inside Azure VM
 - task: AzureCLI@2
   displayName: "Run Trivy Scan & Generate HTML Report"
   inputs:
