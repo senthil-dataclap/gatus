@@ -53,7 +53,8 @@ steps:
         --name CICD-demo-vm \
         --command-id RunShellScript \
         --scripts 'git pull origin Azure-main'
-# Step 5: Build Docker Image inside the Azure VM
+
+#Step 5:  Build Docker Image inside the Azure VM
 - task: AzureCLI@2
   displayName: "Build Docker Image inside Azure VM"
   inputs:
@@ -68,5 +69,3 @@ steps:
         --scripts '
           cd /home/azureuser/gatus;
           docker build -t gatus-azure:latest -f ./Dockerfile .;'
-
-          
