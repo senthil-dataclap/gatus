@@ -22,13 +22,13 @@ steps:
         --name CICD-demo-vm \
         --command-id RunShellScript \
         --scripts '
-          sleep 5;
+          sleep 10;
           cd /home/azureuser/gatus;
-          sleep 5;
+          sleep 10;
           git checkout Azure-main;
-          sleep 5;
+          sleep 10;
           git pull origin Azure-main;
-          sleep 5;
+          sleep 10;
         '
 
 #  Build Docker Image inside the Azure VM
