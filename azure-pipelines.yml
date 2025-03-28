@@ -16,29 +16,19 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-      # Function to wait until no other run-command is running
-      wait_for_run_command() {
-        while az vm run-command list \
-          --resource-group CICD-demo-vm_group \
-          --vm-name CICD-demo-vm \
-          --query "[?status=='Running']" | grep -q "Running"; do
-          echo "Another run-command is in progress. Waiting 10 seconds..."
-          sleep 10
-        done
-      }
-
-      echo "Waiting for previous command to finish..."
-      wait_for_run_command
-
       echo "Executing Git Pull command..."
       az vm run-command invoke \
         --resource-group CICD-demo-vm_group \
         --name CICD-demo-vm \
         --command-id RunShellScript \
         --scripts '
+          sleep 5;
           cd /home/azureuser/gatus;
+          sleep 5;
           git checkout Azure-main;
+          sleep 5;
           git pull origin Azure-main;
+          sleep 5;
         '
 
 #  Build Docker Image inside the Azure VM
@@ -66,19 +56,6 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-      echo "Checking if any previous run-command is still executing..."
-
-      # Loop to wait until no 'Running' command is found
-      while az vm run-command list \
-        --resource-group CICD-demo-vm_group \
-        --vm-name CICD-demo-vm \
-        --query "[?status=='Running']" | grep -q 'Running'; do
-        echo "Previous run-command execution still in progress... waiting 10 seconds"
-        sleep 10
-      done
-
-      echo "No active run-command found. Proceeding with Trivy Scan."
-
       az vm run-command invoke \
         --resource-group CICD-demo-vm_group \
         --name CICD-demo-vm \
