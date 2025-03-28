@@ -4,12 +4,12 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-# Step 1: 
-- script: sleep 10
-  displayName: "Wait before running command"
+variables:
+  - group: CICD-Demo-var-group  # Link the variable group
+
 
 # Step 2: Change to project directory
+steps:
 - task: AzureCLI@2
   displayName: "Change to project directory"
   inputs:
@@ -64,4 +64,6 @@ steps:
         --command-id RunShellScript \
         --scripts '
           cd /home/azureuser/gatus;
-          docker build -t gatus-azure:latest -f ./Dockerfile .;
+          docker build -t gatus-azure:latest -f ./Dockerfile .;'
+
+          
