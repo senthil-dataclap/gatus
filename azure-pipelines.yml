@@ -57,6 +57,7 @@ steps:
         --command-id RunShellScript \
         --scripts '
           mkdir -p /home/azureuser/nginx/html;
+          echo "$(DOCKER_PASSWORD)" | docker login -u arasu35 --password-stdin;
           docker run --rm -v /home/azureuser/nginx/html:/output aquasec/trivy image --format template --template "@contrib/html.tpl" -o /output/trivy-report.html gatus-azure:latest;
           docker restart nginx-reverse-proxy;
         '
