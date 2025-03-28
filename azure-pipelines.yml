@@ -7,29 +7,21 @@ pool:
 variables:
   - group: CICD-Demo-var-group  # Link the variable group
 
+
 steps:
-#  Git Pull the latest code inside the Azure VM
 - task: AzureCLI@2
-  displayName: "Git Pull Latest Code on Azure VM"
+  displayName: "Git Pull on Azure VM"
   inputs:
     azureSubscription: "CICD-Demo-Service-Connection"
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
-      echo "Executing Git Pull command..."
       az vm run-command invoke \
         --resource-group CICD-demo-vm_group \
         --name CICD-demo-vm \
         --command-id RunShellScript \
-        --scripts '
+        --scripts 'cd /home/azureuser/gatus && git pull origin Azure-main'
 
-          cd /home/azureuser/gatus;
-
-          git checkout Azure-main;
-
-          git pull origin Azure-main;
-
-        '
 
 
         
