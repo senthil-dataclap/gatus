@@ -5,8 +5,8 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-# Step 1: Wait to avoid conflicts
-- script: sleep 30
+# Step 1: 
+- script: sleep 10
   displayName: "Wait before running command"
 
 # Step 2: Change to project directory
@@ -50,3 +50,18 @@ steps:
         --name CICD-demo-vm \
         --command-id RunShellScript \
         --scripts 'git pull origin Azure-main'
+# Step 5: Build Docker Image inside the Azure VM
+- task: AzureCLI@2
+  displayName: "Build Docker Image inside Azure VM"
+  inputs:
+    azureSubscription: "CICD-Demo-Service-Connection"
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az vm run-command invoke \
+        --resource-group CICD-demo-vm_group \
+        --name CICD-demo-vm \
+        --command-id RunShellScript \
+        --scripts '
+          cd /home/azureuser/gatus;
+          docker build -t gatus-azure:latest -f ./Dockerfile .;
