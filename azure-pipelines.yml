@@ -7,9 +7,12 @@ pool:
 variables:
   - group: CICD-Demo-var-group  # Link the variable group
 
+steps:
+# Step 1: Wait to avoid conflicts
+- script: sleep 05
+  displayName: "Wait before running command"
 
 # Step 2: Change to project directory
-steps:
 - task: AzureCLI@2
   displayName: "Change to project directory"
   inputs:
