@@ -26,6 +26,9 @@ steps:
         --command-id RunShellScript \
         --scripts 'cd /home/azureuser/gatus'
 
+- script: sleep 10
+  displayName: "Wait before running command"        
+
 # Step 3: Checkout branch
 - task: AzureCLI@2
   displayName: "Checkout Azure-main branch"
@@ -39,6 +42,9 @@ steps:
         --name CICD-demo-vm \
         --command-id RunShellScript \
         --scripts 'git checkout Azure-main'
+        
+- script: sleep 10
+  displayName: "Wait before running command"        
 
 # Step 4: Pull latest code
 - task: AzureCLI@2
