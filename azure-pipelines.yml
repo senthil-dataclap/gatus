@@ -23,8 +23,9 @@ steps:
         --scripts '
           cd /home/azureuser/gatus;
           git checkout Azure-main;
-          git pull origin Azure-main;
           sleep 10;
+          git pull origin Azure-main;
+          sleep 5;
         ' 
 
 #  Build Docker Image inside the Azure VM
