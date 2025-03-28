@@ -16,12 +16,10 @@ steps:
     scriptType: bash
     scriptLocation: inlineScript
     inlineScript: |
+      echo "Waiting for any running commands to complete..."
+      sleep 30  # Wait 30 seconds before running the command
       az vm run-command invoke \
         --resource-group CICD-demo-vm_group \
         --name CICD-demo-vm \
         --command-id RunShellScript \
         --scripts 'cd /home/azureuser/gatus && git pull origin Azure-main'
-
-
-
-        
