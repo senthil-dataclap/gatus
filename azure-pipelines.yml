@@ -83,7 +83,9 @@ steps:
         --scripts '
     
           echo "$(DOCKER_PASSWORD)" | docker login -u arasu35 --password-stdin;
+          sleep 5;
           docker run --rm -v /home/azureuser/nginx/html:/output aquasec/trivy image --format template --template "@contrib/html.tpl" -o /output/trivy-report.html gatus-azure:latest;
+          sleep 5;
           docker restart nginx-reverse-proxy; '
 
 # Step 9: Wait before trivy scan completed
