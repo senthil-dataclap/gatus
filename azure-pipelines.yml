@@ -8,28 +8,11 @@ variables:
   - group: CICD-Demo-var-group  # Link the variable group
 
 steps:
-# Step 1: Wait to avoid conflicts
-- script: sleep 10
-  displayName: "Wait before running command"
+# Step 1: Wait before running any command (to avoid Azure conflicts)
+- script: sleep 5
+  displayName: "Wait before running commands"
 
-# Step 2: Change to project directory
-- task: AzureCLI@2
-  displayName: "Change to project directory"
-  inputs:
-    azureSubscription: "CICD-Demo-Service-Connection"
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: |
-      az vm run-command invoke \
-        --resource-group CICD-demo-vm_group \
-        --name CICD-demo-vm \
-        --command-id RunShellScript \
-        --scripts 'cd /home/azureuser/gatus'
-
-- script: sleep 10
-  displayName: "Wait before running command"        
-
-# Step 3: Checkout branch
+# Step 2: Checkout branch
 - task: AzureCLI@2
   displayName: "Checkout Azure-main branch"
   inputs:
@@ -42,9 +25,10 @@ steps:
         --name CICD-demo-vm \
         --command-id RunShellScript \
         --scripts 'git checkout Azure-main'
-        
-- script: sleep 10
-  displayName: "Wait before running command"        
+
+# Step 3: Wait before pulling the latest code
+- script: sleep 5
+  displayName: "Wait before Git Pull"
 
 # Step 4: Pull latest code
 - task: AzureCLI@2
@@ -60,7 +44,11 @@ steps:
         --command-id RunShellScript \
         --scripts 'git pull origin Azure-main'
 
-#Step 5:  Build Docker Image inside the Azure VM
+# Step 5: Wait before Docker build to ensure files are updated
+- script: sleep 5
+  displayName: "Wait before Docker Build"
+
+# Step 6: Build Docker Image inside the Azure VM
 - task: AzureCLI@2
   displayName: "Build Docker Image inside Azure VM"
   inputs:
