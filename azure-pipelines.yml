@@ -22,49 +22,14 @@ steps:
         --name CICD-demo-vm \
         --command-id RunShellScript \
         --scripts '
-          sleep 10;
+
           cd /home/azureuser/gatus;
-          sleep 10;
+
           git checkout Azure-main;
-          sleep 10;
+
           git pull origin Azure-main;
-          sleep 10;
+
         '
 
-#  Build Docker Image inside the Azure VM
-- task: AzureCLI@2
-  displayName: "Build Docker Image inside Azure VM"
-  inputs:
-    azureSubscription: "CICD-Demo-Service-Connection"
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: |
-      az vm run-command invoke \
-        --resource-group CICD-demo-vm_group \
-        --name CICD-demo-vm \
-        --command-id RunShellScript \
-        --scripts '
-          cd /home/azureuser/gatus;
-          docker build -t gatus-azure:latest -f ./Dockerfile .;
-        '
-
-#  Run Trivy Scan and Generate Report inside Azure VM
-- task: AzureCLI@2
-  displayName: "Run Trivy Scan & Generate HTML Report"
-  inputs:
-    azureSubscription: "CICD-Demo-Service-Connection"
-    scriptType: bash
-    scriptLocation: inlineScript
-    inlineScript: |
-      az vm run-command invoke \
-        --resource-group CICD-demo-vm_group \
-        --name CICD-demo-vm \
-        --command-id RunShellScript \
-        --scripts '
-          mkdir -p /home/azureuser/nginx/html;
-          echo "$(DOCKER_PASSWORD)" | docker login -u arasu35 --password-stdin;
-          docker run --rm -v /home/azureuser/nginx/html:/output aquasec/trivy image --format template --template "@contrib/html.tpl" -o /output/trivy-report.html gatus-azure:latest;
-          docker restart nginx-reverse-proxy;
-        '
 
         
