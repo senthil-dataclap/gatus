@@ -9,7 +9,7 @@ variables:
 
 steps:
 # Step 1: Wait to avoid conflicts
-- script: sleep 05
+- script: sleep 10
   displayName: "Wait before running command"
 
 # Step 2: Change to project directory
