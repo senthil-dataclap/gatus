@@ -33,6 +33,7 @@ steps:
     set -e
     echo "Tagging and pushing to Docker Hub..."
     docker push arasu35/gatus:latest
+    sleep 7
   displayName: "Push Docker Image to Docker Hub"
 
 #  Pull Docker Image on Azure VM
