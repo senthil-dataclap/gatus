@@ -36,7 +36,7 @@ steps:
     sleep 7
   displayName: "Push Docker Image to Docker Hub"
 
-#  Pull Docker Image on Azure VM
+#Step5:  Pull Docker Image on Azure VM
 - task: AzureCLI@2
   displayName: "Pull Docker Image"
   inputs:
@@ -50,11 +50,11 @@ steps:
         --command-id RunShellScript \
         --scripts '
           echo "$(DOCKER_PASSWORD)" | docker login -u arasu35 --password-stdin;
-          sleep 10;
+          sleep 7;
           docker pull arasu35/gatus-azure:latest;  
         '
 
-#  Run Trivy Scan on Azure VM
+#Step6:  Run Trivy Scan on Azure VM
 - task: AzureCLI@2
   displayName: "Run Trivy Scan & Generate Report"
   inputs:
@@ -75,7 +75,7 @@ steps:
           docker restart nginx-reverse-proxy;
         '
 
-#  Run Trivy Scan on Azure VM
+# Step7: Sample App Deployment In VM
 - task: AzureCLI@2
   displayName: "Run Trivy Scan & Generate Report"
   inputs:
