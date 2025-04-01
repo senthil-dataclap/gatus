@@ -73,3 +73,22 @@ steps:
           # Restart Nginx to reflect the new report
           docker restart nginx-reverse-proxy;
         '
+
+#  Run Trivy Scan on Azure VM
+- task: AzureCLI@2
+  displayName: "Run Trivy Scan & Generate Report"
+  inputs:
+    azureSubscription: "CICD-Demo-Service-Connection"
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      az vm run-command invoke \
+        --resource-group CICD-demo-vm_group \
+        --name CICD-demo-vm \
+        --command-id RunShellScript \
+        --scripts '
+          docker stop gatus || true;
+          docker rm gatus || true;
+          docker run -d --name gatus -p 8081:8080 arasu35/gatus:latest;
+        '
+
