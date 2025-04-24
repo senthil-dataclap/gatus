@@ -1,1 +1,1 @@
-main.
+install azure-gatus app.
