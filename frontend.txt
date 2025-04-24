@@ -1,1 +1,1 @@
-vulnerability injected in docker image of azure.
+rollback with main docker image of azure.
