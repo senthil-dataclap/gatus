@@ -1,5 +1,5 @@
 trigger:
-- Azure-main
+- branch name removed
 
 pool:
   vmImage: ubuntu-latest
