@@ -1,1 +1,1 @@
-bug has been injected in azure-gatus code
+rollback with main code in azure-gatus
