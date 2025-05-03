@@ -1,0 +1,44 @@
+{
+  "id": "2b4600b9-5cd9-4e3b-9c8b-553c8e58383a",
+  "name": "TerraformInstaller",
+  "friendlyName": "Terraform Installer",
+  "description": "Installs a specific version of terraform",
+  "author": "Charles Zipp",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "visibility": [
+    "Build",
+    "Release"
+  ],
+  "demands": [],
+  "version": {
+    "Major": "#{majorNumber}#",
+    "Minor": "#{GitVersion.Minor}#",
+    "Patch": "#{GitVersion.Patch}#"
+  },
+  "minimumAgentVersion": "3.248.0",
+  "instanceNameFormat": "Use Terraform $(terraformVersion)",
+  "inputs": [
+    {
+      "name": "terraformVersion",
+      "type": "string",
+      "label": "Version",
+      "defaultValue": "latest",
+      "required": true,
+      "helpMarkDown": "Specify the version of terraform that should be installed"
+    },
+    {
+      "name": "downloadUrl",
+      "type": "string",
+      "label": "Download URL",
+      "required": false,
+      "helpMarkDown": "(optional) Specify a custom URL to pull terraform from. Defaults to HashiCorp"
+    }
+  ],
+  "execution": {
+    "Node20_1": {
+      "target": ".bin/index.js",
+      "argumentFormat": ""
+    }
+  }
+}

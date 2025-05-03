@@ -1,0 +1,29 @@
+{
+	"name": "Node.js & TypeScript",
+	"image": "mcr.microsoft.com/devcontainers/typescript-node:1-22-bookworm",
+	"features": {
+		"ghcr.io/devcontainers/features/azure-cli:1": {},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/devcontainers/features/terraform:1": {},
+		"ghcr.io/stuartleeks/dev-container-features/azure-cli-persistence:0": {},
+		"ghcr.io/stuartleeks/dev-container-features/shell-history:0": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"eamodio.gitlens",
+				"redhat.vscode-yaml",
+				"vscode-icons-team.vscode-icons",
+				"editorconfig.editorconfig",
+				"dbaeumer.vscode-eslint",
+				"ecmel.vscode-html-css",
+				"streetsidesoftware.code-spell-checker",
+				"alexkrechik.cucumberautocomplete",
+				"ms-azure-devops.azure-pipelines",
+				"github.copilot",
+				"hashicorp.terraform",
+				"github.vscode-github-actions"
+			]
+		}
+	}
+}

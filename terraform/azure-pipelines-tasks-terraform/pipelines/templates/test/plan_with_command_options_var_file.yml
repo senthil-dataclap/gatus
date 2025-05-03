@@ -1,0 +1,31 @@
+parameters:
+  - name: taskVersion
+    default: 2
+
+jobs:
+- job: plan_with_comand_options_var_file_${{ parameters.taskVersion }}
+  steps:
+    - task: JasonBJohnson.azure-pipelines-tasks-terraform-rc.azure-pipelines-tasks-terraform-installer.TerraformInstaller@${{ parameters.taskVersion }}
+      displayName: install terraform
+      inputs:
+        terraformVersion: $(terraformVersion)
+    - task: TerraformCLI@${{ parameters.taskVersion }}
+      displayName: 'terraform init'
+      inputs:
+        command: init
+        workingDirectory: $(terraform_templates_dir)
+        backendType: azurerm
+        backendServiceArm: 'env_test'
+        backendAzureRmResourceGroupName: $(backendAzureRmResourceGroupName)
+        backendAzureRmResourceGroupLocation: $(backendAzureRmResourceGroupLocation)
+        backendAzureRmStorageAccountName: $(backendAzureRmStorageAccountName)
+        backendAzureRmStorageAccountSku: $(backendAzureRmStorageAccountSku)
+        backendAzureRmContainerName: $(backendAzureRmContainerName)
+        backendAzureRmKey: plan_with_comand_options_var_file.tfstate
+    - task: TerraformCLI@${{ parameters.taskVersion }}
+      displayName: 'terraform plan'
+      inputs:
+        command: plan
+        workingDirectory: $(terraform_templates_dir)
+        environmentServiceName: 'env_test'
+        commandOptions: '-var-file="./default.vars" -out=$(System.DefaultWorkingDirectory)/terraform.tfplan -detailed-exitcode'

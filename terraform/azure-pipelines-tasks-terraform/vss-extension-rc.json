@@ -1,0 +1,25 @@
+{
+    "id": "azure-pipelines-tasks-terraform-rc",
+    "name": "Azure Pipelines Terraform Tasks (RC)",
+    "galleryFlags": [
+        "Preview"
+    ],
+    "public": false,
+    "contributions": [
+        {
+            "description": "A tab to show terraform plan output",
+            "id": "azure-pipelines-tasks-terraform-plan",
+            "type": "ms.vss-build-web.build-results-tab",
+            "targets": [
+                 "ms.vss-build-web.build-results-view"
+            ],
+            "properties": {
+                "name": "Terraform Plan (RC)",
+                "supportsTasks": [
+                    "51355d76-dd54-4754-919d-bba27fdf59e4"
+                ],
+                "uri": "views/terraform-plan/index.html"
+            }
+        }
+    ]
+}

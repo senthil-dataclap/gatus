@@ -1,0 +1,55 @@
+parameters:
+  - name: taskVersion
+    default: 2
+
+jobs:
+- job: azurerm_mgmt_group_service_connection_${{ parameters.taskVersion }}
+  steps:
+    - task: JasonBJohnson.azure-pipelines-tasks-terraform-rc.azure-pipelines-tasks-terraform-installer.TerraformInstaller@${{ parameters.taskVersion }}
+      displayName: install terraform
+      inputs:
+        terraformVersion: $(terraformVersion)
+    - task: TerraformCLI@${{ parameters.taskVersion }}
+      displayName: 'check version'
+      inputs:
+        command: version
+        workingDirectory: $(terraform_templates_dir)
+    - task: TerraformCLI@${{ parameters.taskVersion }}
+      displayName: 'terraform init'
+      inputs:
+        command: init
+        workingDirectory: $(terraform_templates_dir)
+        backendType: azurerm
+        backendServiceArm: 'env_test_mgmt'
+        backendAzureRmSubscriptionId: $(azure_subscription_id)
+        backendAzureRmResourceGroupName: $(backendAzureRmResourceGroupName)
+        backendAzureRmResourceGroupLocation: $(backendAzureRmResourceGroupLocation)
+        backendAzureRmStorageAccountName: $(backendAzureRmStorageAccountName)
+        backendAzureRmStorageAccountSku: $(backendAzureRmStorageAccountSku)
+        backendAzureRmContainerName: $(backendAzureRmContainerName)
+        backendAzureRmKey: azurerm_mgmt_group_service_connection.tfstate
+    - task: TerraformCLI@${{ parameters.taskVersion }}
+      displayName: 'terraform plan'
+      inputs:
+        command: plan
+        workingDirectory: $(terraform_templates_dir)
+        environmentServiceName: 'env_test_mgmt'
+        providerAzureRmSubscriptionId: $(azure_subscription_id)
+        secureVarsFile: azurerm-mgmt-group-scope.vars
+        commandOptions: '-out=$(System.DefaultWorkingDirectory)/terraform.tfplan -detailed-exitcode'
+    - task: TerraformCLI@${{ parameters.taskVersion }}
+      displayName: 'terraform apply'
+      inputs:
+        command: apply
+        workingDirectory: $(terraform_templates_dir)
+        environmentServiceName: 'env_test_mgmt'
+        providerAzureRmSubscriptionId: $(azure_subscription_id)
+        commandOptions: '$(System.DefaultWorkingDirectory)/terraform.tfplan'
+    - task: TerraformCLI@${{ parameters.taskVersion }}
+      displayName: 'terraform destroy'
+      inputs:
+        command: destroy
+        workingDirectory: $(terraform_templates_dir)
+        environmentServiceName: 'env_test_mgmt'
+        providerAzureRmSubscriptionId: $(azure_subscription_id)
+        secureVarsFile: azurerm-mgmt-group-scope.vars

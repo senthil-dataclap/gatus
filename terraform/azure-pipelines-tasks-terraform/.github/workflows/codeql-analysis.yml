@@ -1,0 +1,35 @@
+name: CodeQL Analysis
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 8 * * *'
+  workflow_dispatch:
+
+permissions:
+  # required for all workflows
+  security-events: write
+
+  # only required for workflows in private repositories
+  actions: read
+  contents: read
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          queries: security-and-quality
+          languages: javascript
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+
+# Built with ❤ by [Pipeline Foundation](https://pipeline.foundation)

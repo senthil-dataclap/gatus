@@ -1,0 +1,50 @@
+parameters:
+  - name: taskVersion
+    default: 2
+
+jobs:
+- job: aws_service_connection_${{ parameters.taskVersion }}
+  variables: 
+    test_templates_dir: $(terraform_templates_dir)/aws
+  steps:
+    - task: JasonBJohnson.azure-pipelines-tasks-terraform-rc.azure-pipelines-tasks-terraform-installer.TerraformInstaller@${{ parameters.taskVersion }}
+      displayName: install terraform
+      inputs:
+        terraformVersion: $(terraformVersion)
+    - task: TerraformCLI@${{ parameters.taskVersion }}
+      displayName: 'terraform init'
+      inputs:
+        command: init
+        workingDirectory: $(test_templates_dir)
+        backendType: aws
+        backendServiceAws: env_test_aws
+        backendAwsRegion: us-east-1
+        backendAwsBucket: s3-trfrm-rc-eus-czp
+        backendAwsKey: 'azure-pipelines-terraform/aws-service-connection'
+    - task: TerraformCLI@${{ parameters.taskVersion }}
+      displayName: 'terraform validate'
+      inputs:
+        workingDirectory: $(test_templates_dir)
+    - task: TerraformCLI@${{ parameters.taskVersion }}
+      displayName: 'terraform plan'
+      inputs:
+        command: plan
+        workingDirectory: $(test_templates_dir)
+        providerServiceAws: env_test_aws
+        providerAwsRegion: us-east-1
+        commandOptions: '-out=$(System.DefaultWorkingDirectory)/terraform.tfplan'
+    - task: TerraformCLI@${{ parameters.taskVersion }}
+      displayName: 'terraform apply'
+      inputs:
+        command: apply
+        workingDirectory: $(test_templates_dir)
+        providerServiceAws: env_test_aws
+        providerAwsRegion: us-east-1
+        commandOptions: '$(System.DefaultWorkingDirectory)/terraform.tfplan'
+    - task: TerraformCLI@${{ parameters.taskVersion }}
+      displayName: 'terraform destroy'
+      inputs:
+        command: destroy
+        workingDirectory: $(test_templates_dir)
+        providerServiceAws: env_test_aws
+        providerAwsRegion: us-east-1
